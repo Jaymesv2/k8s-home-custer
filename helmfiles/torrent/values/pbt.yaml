@@ -1,0 +1,148 @@
+image:
+  repository: k8sathome/qbittorrent
+  tag: v4.3.3
+  pullPolicy: IfNotPresent
+
+
+ingress:
+  main:
+    enabled: false
+    nameOverride:
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+
+    labels: {}
+
+    # -- Set the ingressClass that is used for this ingress.
+    # Requires Kubernetes >=1.19
+    ingressClassName: "traefik"
+    hosts:
+    - host: pbt.jaymes.xyz
+      paths:
+          path: /
+          pathType: Prefix
+          service: 
+            name: pbt
+            port: 8080
+    # -- Configure TLS for the ingress. Both secretName and hosts can process a Helm template.
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+
+
+env:
+  # Our qBittorrent image has a feature that can wait for the VPN to be connected before actually starting the application.
+  # It does this by checking the contents of a file /shared/vpnstatus to contain the string 'connected'.
+  WAIT_FOR_VPN: "true"
+
+persistence:
+  config:
+    enabled: true
+    type: emptyDir
+    mountPath: /config
+
+  # This should be enabled so that both the qBittorrent and Wireguard container have access to a shared volume mounted to /shared.
+  # It will be used to communicate between the two containers.
+  shared:
+    enabled: false
+    type: emptyDir
+    mountPath: /shared
+
+  media:
+    enabled: false
+    mountPath: /media
+
+  downloads:
+    enabled: false
+    mountPath: /downloads
+#podSecurityContext:
+
+#  sysctls:
+#  - name: net.ipv4.conf.all.src_valid_mark
+#    value: "1"
+
+metrics:  
+  enabled: true
+  exporter:
+    env:
+      user: "admin"
+      password: "adminadmin"
+      port: 9022
+      logLevel: INFO
+    
+  prometheusRule:
+    enabled: false
+    labels: {}
+    rules: 
+    - alert: qBittorrentDown
+      annotations:
+        description: qBittorrent service is down
+        summary: qbt is down
+      expr: |
+        qbittorrent_up == 0\
+      for: 5m
+      labels:
+        severity: critical
+
+addons:
+  codeserver:
+    enabled: false
+    image: 
+      repository: codercom/code-server
+      tag: 3.9.0
+    workingDir: "/"
+    ingress:
+      enabled: true
+      #annotations:
+        #kubernetes.io/ingress.class: "traefik"
+      hosts:
+      - host: localhost
+        paths:
+        - path: /
+          pathType: Prefix
+      tls:
+      - hosts:
+        - app-config.domain.tld
+    volumeMounts:
+    - name: config
+      mountPath: /config
+  vpn:
+    enabled: true
+    # This Should be set to `wireguard`. This will set the add-on to use the default settings for Wireguard based connections.
+    type: wireguard
+
+    # If the podSecurityContext is set to run as a different user, make sure to run the Wireguard container as UID/GID 568.
+    # This is required for it to be able to read certain configuration files.
+    #securityContext:
+      #runAsUser: 568
+      #runAsGroup: 568
+    securityContext:
+      runAsUser: 0
+      runAsGroup: 0
+
+    env:
+      # Enable a killswitch that kills all trafic when the VPN is not connected
+      KILLSWITCH: "true"
+
+    # The wireguard configuration file provided by your VPN provider goes here.
+    #
+    # Set AllowedIPs to 0.0.0.0/0 to route all traffic through the VPN.
+    #
+    # Pay close attention to the PostUp and PreDown lines. They must be added if you wish to run a script when the connection
+    # is opened / closed.
+    configFileSecret: pbt-wireguard-config
+
+    # The scripts that get run when the VPN connection opens/closes are defined here.
+    # The default scripts will write a string to represent the current connection state to a file.
+    # Our qBittorrent image has a feature that can wait for this file to contain the word 'connected' before actually starting the application.
+    scripts:
+      up: |-
+        #!/bin/bash
+        echo "connected" > /shared/vpnstatus
+
+      down: |-
+        #!/bin/bash
+        echo "disconnected" > /shared/vpnstatus

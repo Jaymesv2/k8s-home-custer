@@ -1,0 +1,21 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned
+spec:
+  selfSigned: {}
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: traefik.jaymes.xyz
+  namespace: traefik-system
+spec:
+  dnsNames:
+    - traefik.jaymes.xyz
+  secretName: traefik.jaymes.xyz-tls
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer

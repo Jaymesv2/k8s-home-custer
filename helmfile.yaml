@@ -1,0 +1,44 @@
+# Use `helm-s3` and `helm-git` and whatever Helm Downloader plugins
+# to use repositories other than the official repository or one backend by chartmuseum.
+repositories:
+# To use official "stable" charts a.k.a https://github.com/helm/charts/tree/master/stable
+- name: stable
+  url: https://charts.helm.sh/stable
+# To use official "incubator" charts a.k.a https://github.com/helm/charts/tree/master/incubator
+#- name: incubator
+#  url: https://charts.helm.sh/incubator
+# k8s at home
+- name: k8s-at-home
+  url: https://k8s-at-home.com/charts/
+
+#releases:
+
+# https://artifacthub.io/packages/helm/bitnami/postgres
+#- name: postgres
+#  chart: bitnami/mysql
+#  values:
+#  - ./values/postgres.yaml
+  
+#- name: vault
+#  chart: hashicorp/vault
+#  version: 0.20.1
+#  values:
+#    - ./values/vault.yaml
+  #secrets:
+  #  - vault_secret.yaml
+#- name: qbt
+#  namespace: default
+#  chart: k8s-at-home/qbittorrent
+#  version: 0
+#  values:
+#  - ""
+#  secrets:
+#  - ""
+#- name: not epic
+#  chart: pogfish
+
+helmfiles:
+- path: helmfiles/datastore/helmfile.yaml
+- path: helmfiles/torrent/helmfile.yaml
+- path: helmfiles/web/helmfile.yaml
+- path: helmfiles/monitoring/helmfile.yaml

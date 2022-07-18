@@ -1,0 +1,13 @@
+architecture: standalone
+auth: 
+  enabled: true
+  existingSecret: authelia
+  existingSecretPasswordKey: REDIS_PASSWORD
+
+networkPolicy:
+  enabled: true
+  allowExternal: false
+  extraIngress: []
+  extraEgress: []
+  ingressNSMatchLabels: {}
+  ingressNSPodMatchLabels: {}

@@ -1,0 +1,9 @@
+architecture: standalone
+auth:
+  existingSecret: mysql
+  username: authelia
+  database: authelia
+
+primary:
+  persistence:
+    enabled: false

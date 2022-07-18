@@ -1,0 +1,22 @@
+# Use `helm-s3` and `helm-git` and whatever Helm Downloader plugins
+# to use repositories other than the official repository or one backend by chartmuseum.
+repositories:
+# To use official "stable" charts a.k.a https://github.com/helm/charts/tree/master/stable
+- name: stable
+  url: https://charts.helm.sh/stable
+# To use official "incubator" charts a.k.a https://github.com/helm/charts/tree/master/incubator
+#- name: incubator
+#  url: https://charts.helm.sh/incubator
+# k8s at home
+- name: k8s-at-home
+  url: https://k8s-at-home.com/charts/
+
+releases:
+- name: pbt
+  chart: k8s-at-home/qbittorrent
+  values:
+  - ./values/pbt.yaml
+- name: bt
+  chart: k8s-at-home/qbittorrent
+  values:
+  - ./values/bt.yaml

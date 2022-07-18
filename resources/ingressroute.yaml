@@ -1,0 +1,55 @@
+#---
+#apiVersion: traefik.containo.us/v1alpha1
+#kind: IngressRoute
+#metadata:
+#  name: traefik-dashboard
+#  namespace: traefik-system
+#spec:
+#  entryPoints:
+#    - web
+#    - websecure
+#  routes:
+#    - match: Host(`traefik.jaymes.xyz`) # Hostname to match
+#      kind: Rule
+#      services: # Service to redirect requests to
+#        - name: api@internal # Special service created by Traefik pod
+#          kind: TraefikService
+#      middlewares:
+#        - name: traefik-dashboard-auth
+#  tls:
+#    secretName: traefik.jaymes.xyz-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: traefik-dashboard
+  namespace: traefik-system
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: auth@kubernetescrd
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  rules:
+    - host: traefik.jaymes.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: traefik
+                port:
+                  number: 80
+  tls:
+  - secretName: traefik.jaymes.xyz-tls
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-dashboard-auth
+  namespace: traefik-system
+spec:
+  basicAuth:
+#    namespace: traefik-system
+    secret: traefik-auth

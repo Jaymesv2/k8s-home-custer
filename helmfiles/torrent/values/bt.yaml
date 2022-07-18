@@ -1,0 +1,83 @@
+image:
+  repository: k8sathome/qbittorrent
+  tag: v4.3.3
+  pullPolicy: IfNotPresent
+
+
+ingress:
+  main:
+    enabled: true
+    #nameOverride:
+    annotations: 
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      #traefik.ingress.kubernetes.io/router.middlewares: authelia@kubernetes
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+
+#    labels: {}
+    # -- Set the ingressClass that is used for this ingress.
+    # Requires Kubernetes >=1.19
+    ingressClassName: "traefik"
+    hosts:
+    - host: bt.jaymes.xyz
+      paths:
+        - path: /
+          pathType: Prefix
+          service: 
+            name: bt-bittorrent
+          #port: 8080
+    # -- Configure TLS for the ingress. Both secretName and hosts can process a Helm template.
+#    tls: 
+#      - secretName: traefik.jaymes.xyz-tls
+    #    hosts:
+    #      - chart-example.local
+
+
+persistence:
+  config:
+    enabled: true
+    type: emptyDir
+    mountPath: /config
+
+  # This should be enabled so that both the qBittorrent and Wireguard container have access to a shared volume mounted to /shared.
+  # It will be used to communicate between the two containers.
+  shared:
+    enabled: false
+    type: emptyDir
+    mountPath: /shared
+
+  media:
+    enabled: false
+    mountPath: /media
+
+  downloads:
+    enabled: false
+    mountPath: /downloads
+#podSecurityContext:
+
+#  sysctls:
+#  - name: net.ipv4.conf.all.src_valid_mark
+#    value: "1"
+
+metrics:  
+  enabled: true
+  exporter:
+    env:
+      user: "admin"
+      password: "adminadmin"
+      port: 9022
+      logLevel: INFO
+    
+  prometheusRule:
+    enabled: false
+    labels: {}
+    rules: 
+    - alert: qBittorrentDown2
+      annotations:
+        description: qBittorrent service is down
+        summary: qbt is down
+      expr: |
+        qbittorrent_up == 0\
+      for: 5m
+      labels:
+        severity: critical
