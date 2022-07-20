@@ -33,13 +33,13 @@ releases:
 # https://github.com/authelia/chartrepo/tree/master/charts/authelia
 - name: authelia
   version: 0.8.38
-  #namespace: traefik-system
+  namespace: traefik-system
   chart: authelia/authelia
   values:
   - ./values/authelia.yaml
 # https://artifacthub.io/packages/helm/bitnami/redis
 - name: authelia-redis
-  #namespace: traefik-system
+  namespace: traefik-system
   chart: bitnami/redis
   values:
   - ./values/authelia-redis.yaml

@@ -1,0 +1,8 @@
+fullnameOverride: 'kubernetes-dashboard'
+metrics-server:
+  enabled: true
+  args:
+  - --kubelet-preferred-address-types=InternalIP
+  - --kubelet-insecure-tls
+metricsScraper:
+  enabled: true

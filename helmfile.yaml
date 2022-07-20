@@ -11,8 +11,8 @@ repositories:
 - name: k8s-at-home
   url: https://k8s-at-home.com/charts/
 
-#releases:
 
+#releases:
 # https://artifacthub.io/packages/helm/bitnami/postgres
 #- name: postgres
 #  chart: bitnami/mysql
@@ -38,7 +38,7 @@ repositories:
 #  chart: pogfish
 
 helmfiles:
+- path: helmfiles/monitoring/helmfile.yaml
 - path: helmfiles/datastore/helmfile.yaml
 - path: helmfiles/torrent/helmfile.yaml
-- path: helmfiles/web/helmfile.yaml
-- path: helmfiles/monitoring/helmfile.yaml
+- path: helmfiles/webhost/helmfile.yaml

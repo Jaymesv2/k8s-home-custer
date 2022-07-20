@@ -1,11 +1,22 @@
 # helmfiles
 
-helm needs this subcommand:
-`helm plugin install https://github.com/databus23/helm-diff`
 
-CRDs:
+# Bootstrapping
+helm needs the `helm-diff` plugin for helmfile to work. `helm plugin install https://github.com/databus23/helm-diff`
+
+## Prometheus
+Prometheus is a bit of a pain. This should work but I need to customize it.
+```sh
+git clone https://github.com/prometheus-operator/kube-prometheus 
+kubectl apply --server-side -f kube-prometheus/manifests/setup        
+until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done     
+kubectl apply -f kube-prometheus/manifests/   
+```
+
+## CRDs
 cert-manager: `kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.8.2/cert-manager.crds.yaml`
 
+## Custom Resources
 
 
 # Host
