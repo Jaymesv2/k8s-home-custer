@@ -18,9 +18,9 @@ cert-manager: `kubectl apply -f https://github.com/cert-manager/cert-manager/rel
 
 ## Custom Resources
 
-
-# Host
-## Specs
+# Hosts
+## Master Node
+### Specs
 | part | item | model number | link|
 |---|---|---|---|
 | CPU | Ryzen Threadripper 1950X | YD195XA8AEWOF  | https://www.amd.com/en/products/cpu/amd-ryzen-threadripper-1950x |
@@ -30,52 +30,65 @@ cert-manager: `kubectl apply -f https://github.com/cert-manager/cert-manager/rel
 | PSU | CORSAIR HX850, 850 Watt, 80+ Platinum| CP-9020138-NA | https://www.corsair.com/us/en/Categories/Products/Power-Supply-Units/hxi-series-2017-config/p/CP-9020138-NA |
 | SSD | 2x samsung 980 pro| MZ-V8P2T0B/AM | https://semiconductor.samsung.com/consumer-storage/internal-ssd/980pro/ |
 | HDD | 6x 16TB WD Gold | WD161KRYZ  | https://www.westerndigital.com/products/internal-drives/wd-gold-sata-hdd#WD161KRYZ |
-## Operating System
+### Operating System
 The host will run nixos. 
-## Storage
+### Storage
 The drives will 
 6 - 16TB WD Gold drives in RAID-Z (80TB usable)
+## Worker 1
+### Specs
+asdf
+### Operating System
+Currently Ubuntu Server
+### Storage
+None
+# Microk8s Options
+dashboard, dns, helm3, prometheus, registry, storage, cilium, fluentd, gpu, helm, ingress, istio, jaeger, knative, kubeflow, linkerd, metallb, metrics-server, rbac
 
 # Persistence layer
 handles data persistence.
-## Hostpath
+## Storage Providers
 ### HDD
 Bulk data storage.
 ### SSD
 Fast storage for applications
-## Minio
+## Storage APIs
+### Minio
 provides s3 object storage, provides buckets using both hdd and ssd storage.
+### PVCS
+Some pvcs will be 
+
+ssd storage is at `/mnt/sped/`, hdd storage is at `/mnt/tank`
+| name | path | kind | purpose |
+|---|----|----|----|
+| media | /mnt/tank/media | hostpath hdd | store media files |
+| qbt conf | /state/bt | hostpath hdd | 
+| qbt conf | /state/pbt | hostpath hdd |
 
 ## Databases
 Both Postgres and Mysql are provided since some applications require mysql. If I can though I will remove mysql.
 ### Postgres
 
 ### Mysql
+DEPREICATED
 ### Redis
-## Storage Providers
-### Minio
-### PVCs
-ssd storage is at `/mnt/sped/`, hdd storage is at `/mnt/tank`
-| name | path | kind | purpose |
-|---|----|----|----|
-| media | /mnt/tank/media | hdd | store media files |
-| qbt conf | /state/bt | hdd | 
-| qbt conf | /state/pbt | hdd |
-|  
+redis instances will probably be deployed per
 
-
-# Base Applications
-## Ingress
-### Traefik
-### Authelia
+# Base Software Infrastructure
+## Kubernetes Dashboard
+Kinda Important to have
 ## Observability
-### Elastic Search
-receives logs, metrics, and traces from the otel collector which it processes.
-### Otel Collector
-run as daemonset which passes its data into elk
 ### Prometheus
 collects metrics
+### Otel Collector
+run as daemonset which passes its data into elk
+### Elastic Search
+receives logs, metrics, and traces from the otel collector which it processes.
 
+## Web Access (Ingress)
+### Traefik
+Traefik is the 
+### Authelia
 
 # Applications
 ## Nextcloud

@@ -1,6 +1,0 @@
-all:
-  hosts:
-    ptqbt_proxy: 
-      ansible_host: 19292992
-      ansible_user: root
-    vars:
