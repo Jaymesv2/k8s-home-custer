@@ -1,5 +1,5 @@
 architecture: standalone
-auth: 
+auth:
   enabled: true
   existingSecret: authelia
   existingSecretPasswordKey: REDIS_PASSWORD

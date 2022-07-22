@@ -30,7 +30,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   rules:
-    - host: traefik.jaymes.xyz
+    - host: traefik.testing.jaymes.xyz
       http:
         paths:
           - path: /
@@ -39,17 +39,7 @@ spec:
               service:
                 name: traefik
                 port:
-                  number: 80
+                  name: "traefik"
+                  #number: 80
   tls:
   - secretName: traefik.jaymes.xyz-tls
-
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-dashboard-auth
-  namespace: traefik-system
-spec:
-  basicAuth:
-#    namespace: traefik-system
-    secret: traefik-auth

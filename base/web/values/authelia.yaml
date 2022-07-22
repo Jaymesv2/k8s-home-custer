@@ -632,7 +632,7 @@ configMap:
 
       ## The url to the ldap server. Format: <scheme>://<address>[:<port>].
       ## Scheme can be ldap or ldaps in the format (port optional).
-      url: ldap://10.0.0.246
+      url: ldap://ldap.traefik-system.svc.cluster.local
 
       ## Connection Timeout.
       timeout: 5s
@@ -950,7 +950,7 @@ configMap:
     redis:
       enabled: true
       enabledSecret: true
-      host: authelia-redis-master.default.svc.cluster.local
+      host: authelia-redis-master.traefik-system.svc.cluster.local
       port: 6379
 
       ## Optional username to be used with authentication.
@@ -1051,8 +1051,8 @@ configMap:
     ## Also supports MariaDB
     ##
     mysql:
-      enabled: true
-      host: mysql.default.svc.cluster.local
+      enabled: false
+      host: mysql.data.svc.cluster.local
       port: 3306
       database: authelia
       username: authelia
@@ -1062,8 +1062,8 @@ configMap:
     ## PostgreSQL (Storage Provider)
     ##
     postgres:
-      enabled: false
-      host: 127.0.0.1
+      enabled: true
+      host: postgres-postgresql.data.svc.cluster.local
       port: 5432
       database: authelia
       schema: public
@@ -1083,7 +1083,7 @@ configMap:
   ## The available providers are: filesystem, smtp. You must use one and only one of these providers.
   notifier:
     ## You can disable the notifier startup check by setting this to true.
-    disable_startup_check: false
+    disable_startup_check: true
 
     ##
     ## File System (Notification Provider)

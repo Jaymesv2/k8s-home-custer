@@ -14,9 +14,11 @@ kubectl apply -f kube-prometheus/manifests/
 ```
 
 ## CRDs
-cert-manager: `kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.8.2/cert-manager.crds.yaml`
+### cert-manager
+`kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.8.2/cert-manager.crds.yaml`
+### Traefik
+`kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.8/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml`
 
-## Custom Resources
 
 # Hosts
 ## Master Node
@@ -89,6 +91,7 @@ receives logs, metrics, and traces from the otel collector which it processes.
 ### Traefik
 Traefik is the 
 ### Authelia
+### Cert-Manager
 
 # Applications
 ## Nextcloud

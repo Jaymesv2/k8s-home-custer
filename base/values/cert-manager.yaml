@@ -169,7 +169,7 @@ ingressShim: {}
   # defaultIssuerGroup: ""
 
 prometheus:
-  enabled: true
+  enabled: false
   servicemonitor:
     enabled: false
     prometheusInstance: default

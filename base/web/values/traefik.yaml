@@ -138,9 +138,9 @@ providers:
     allowEmptyServices: false
     # ingressClass: traefik-internal
     # labelSelector: environment=production,method=traefik
-    namespaces: 
-       - "traefik-system"
-       - "default"
+    namespaces: []
+      #- "default"
+      #- "traefik-system"
 
   kubernetesIngress:
     enabled: true
@@ -148,9 +148,9 @@ providers:
     allowEmptyServices: false
     # ingressClass: traefik-internal
     # labelSelector: environment=production,method=traefik
-    namespaces: 
-      - "default"
-      - "traefik-system"
+    namespaces: []
+      #- "default"
+      #- "traefik-system"
     # IP used for Kubernetes Ingress endpoints
     publishedService:
       enabled: false
@@ -273,11 +273,15 @@ envFrom: []
 ports:
   web:
     port: 80
+    nodePort: 80
+    hostPort: 80
     redirectTo: websecure
     protocol: TCP
     expose: true
   websecure:
     port: 443
+    nodePort: 443
+    hostPort: 443
     expose: true
     protocol: TCP
     tls:
@@ -296,7 +300,8 @@ ports:
   traefik:
     port: 9000
     # Use hostPort if set.
-    # hostPort: 9000
+    nodePort: 9000
+    hostPort: 9000
     #
     # Use hostIP if set. If not set, Kubernetes will default to 0.0.0.0, which
     # means it's listening on all your interfaces and all your IPs. You may want
@@ -351,7 +356,8 @@ tlsOptions: {}
 # from.
 service:
   enabled: true
-  type: LoadBalancer
+  #type: LoadBalancer
+  type: NodePort
   # Additional annotations applied to both TCP and UDP services (e.g. for cloud provider specific config)
   annotations: {}
   # Additional annotations for TCP service only
@@ -437,7 +443,7 @@ certResolvers: {}
 # To prevent unschedulabel pods due to port collisions, if hostNetwork=true
 # and replicas>1, a pod anti-affinity is recommended and will be set if the
 # affinity is left as default.
-hostNetwork: false
+hostNetwork: true # TODO: change me
 
 # Whether Role Based Access Control objects like roles and rolebindings should be created
 rbac:
@@ -480,8 +486,18 @@ affinity: {}
 #               values:
 #                 - {{ template "traefik.name" . }}
 #         topologyKey: kubernetes.io/hostname
-nodeSelector: {}
-tolerations: []
+#  --- start default ---
+# nodeSelector: {} TODO: reset this
+#tolerations: []
+# ---- end default ---
+# --- start kind ---
+nodeSelector:
+  ingress-ready: 'true'
+tolerations:
+  - key: node-role.kubernetes.io/master
+    operator: Equal
+    effect: NoSchedule
+# --- end kind ---
 
 # Pods can have priority.
 # Priority indicates the importance of a Pod relative to other Pods.

@@ -1,0 +1,10 @@
+architecture: standalone
+auth:
+  existingSecret: postgres-auth
+  secretKeys:
+    adminPasswordKey: admin-password
+    replicationPasswordKey: replication-password
+
+primary:
+  persistence:
+    existingClaim: postgres-data
