@@ -169,13 +169,13 @@ ingressShim: {}
   # defaultIssuerGroup: ""
 
 prometheus:
-  enabled: false
+  enabled: true
   servicemonitor:
-    enabled: false
+    enabled: true
     prometheusInstance: default
     targetPort: 9402
     path: /metrics
-    interval: 60s
+    interval: 15s
     scrapeTimeout: 30s
     labels: {}
     honorLabels: false

@@ -11,6 +11,9 @@ mode: "daemonset"
 config:
   exporters:
     logging: {}
+    prometheus:
+      endpoint: "0.0.0.0:8889"
+      namespace: "default"
   extensions:
     health_check: {}
     memory_ballast: {}
@@ -19,14 +22,14 @@ config:
     # If set to null, will be overridden with values based on k8s resource limits
     memory_limiter: null
   receivers:
-    jaeger:
-      protocols:
-        grpc:
-          endpoint: 0.0.0.0:14250
-        thrift_http:
-          endpoint: 0.0.0.0:14268
-        thrift_compact:
-          endpoint: 0.0.0.0:6831
+    #jaeger:
+      #protocols:
+        #grpc:
+          #endpoint: 0.0.0.0:14250
+        #thrift_http:
+          #endpoint: 0.0.0.0:14268
+        #thrift_compact:
+          #endpoint: 0.0.0.0:6831
     otlp:
       protocols:
         grpc:
@@ -41,8 +44,9 @@ config:
             static_configs:
               - targets:
                   - ${MY_POD_IP}:8888
-    zipkin:
-      endpoint: 0.0.0.0:9411
+    #zipkin:
+      #endpoint: 0.0.0.0:9411
+  
   service:
     telemetry:
       metrics:
@@ -61,7 +65,7 @@ config:
           - otlp
       metrics:
         exporters:
-          - logging
+          - prometheus
         processors:
           - memory_limiter
           - batch
@@ -183,9 +187,16 @@ ports:
   metrics:
     # The metrics port is disabled by default. However you need to enable the port
     # in order to use the ServiceMonitor (serviceMonitor.enabled) or PodMonitor (podMonitor.enabled).
-    enabled: false
+    enabled: true
     containerPort: 8888
     servicePort: 8888
+    protocol: TCP
+  prom-export:
+    # The metrics port is disabled by default. However you need to enable the port
+    # in order to use the ServiceMonitor (serviceMonitor.enabled) or PodMonitor (podMonitor.enabled).
+    enabled: true
+    containerPort: 8889
+    servicePort: 8889
     protocol: TCP
 
 containerLogs:
@@ -256,10 +267,12 @@ ingress:
 podMonitor:
   # The pod monitor by default scrapes the metrics port.
   # The metrics port needs to be enabled as well.
-  enabled: false
+  enabled: true
   metricsEndpoints:
   - port: metrics
-    # interval: 15s
+    interval: 15s
+  - port: prom-export
+    interval: 15s
 
   # additional labels for the PodMonitor
   extraLabels: {}

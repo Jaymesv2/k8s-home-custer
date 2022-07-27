@@ -6,7 +6,10 @@ metrics-server:
   - --kubelet-insecure-tls
 metricsScraper:
   enabled: true
-
+serviceMonitor:
+  enabled: true
+  labels: {}
+  annotations: {}
 rbac:
   clusterReadOnlyRole: true
   
