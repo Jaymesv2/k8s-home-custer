@@ -14,6 +14,9 @@ Almost all applications are run on k8s so flux manages helm, kustomization etc..
 
 
 # Hosts
+## Udm Pro
+Ubiquiti Dream Machine Pro. 
+It runs wireguard, node exporter (prometheus metrics), and frr to work with metallb and my other bgp routing systems.
 ## Nas
 ### Specs
 | part | item | model number | link|
@@ -29,14 +32,6 @@ Almost all applications are run on k8s so flux manages helm, kustomization etc..
 The host will run debian.
 ### Storage
 6 - 16TB WD Gold drives in RAID-Z
-## Worker 1
-### Specs
-?
-### Operating System
-Currently Ubuntu Server
-### Storage
-512gb nvme ssd as boot drive
-### Storage
 #### Partitions
 The 2 2tb nvme ssds each have 3 partitions.
 | name | size | purpose |
@@ -50,7 +45,23 @@ The system has 2 primary pools
 | --- | --- | --- |
 | zroot | 2 drive mirror | fast mirrored storage |
 | tank | 6 drive raidz a mirrored special metadata vdev | bulk data storage |
-#### Datasets
+## Worker 1
+### Specs
+?
+### Operating System
+Currently Ubuntu Server
+### Storage
+512gb nvme ssd as boot drive
+## Worker 2 (planned)
+Worker 2 will be my current desktop when I build a new one.
+### Specs
+?
+### Storage
+?
+
+# Storage
+All of the cluster storage is on zfs.
+## Datasets
 | path | purpose |
 | --- | --- |
 | zroot/ROOT/debian | host os 
