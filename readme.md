@@ -1,4 +1,72 @@
-# helmfiles
+# Home Cluster
+My home cluster.
+
+# Configuration Systems
+## Ansible
+Ansible manages each of the physical hosts and vms to get basic configs up
+
+inspired by: https://github.com/eyulf/homelab
+
+## Terraform
+Terraform provisions the vms themselves
+## Flux
+Almost all applications are run on k8s so flux manages helm, kustomization etc...
+
+
+# Hosts
+## Nas
+### Specs
+| part | item | model number | link|
+|---|---|---|---|
+| CPU | Ryzen Threadripper 1950X | YD195XA8AEWOF  | https://www.amd.com/en/products/cpu/amd-ryzen-threadripper-1950x |
+| CPU cooler | XE02-SP3 | SVST-FBA-XE02-SP3 | https://www.silverstonetek.com/en/product/info/coolers/XE02-SP3/ | 
+| RAM | 8x Kingston 16 GB 3200MHz DDR4 ECC CL22 DIMM| KSM32ES8/16HC | https://www.amazon.com/dp/B09N9TZZPJ?psc=1&ref=ppx_yo2ov_dt_b_product_details | 
+| Motherboard | ASRock X399 Taichi | 90-MXB5R0-A0UAYZ | https://www.asrock.com/mb/amd/x399%20taichi/index.asp#Specification | 
+| PSU | CORSAIR HX850, 850 Watt, 80+ Platinum| CP-9020138-NA | https://www.corsair.com/us/en/Categories/Products/Power-Supply-Units/hxi-series-2017-config/p/CP-9020138-NA |
+| SSD | 2x samsung 980 pro| MZ-V8P2T0B/AM | https://semiconductor.samsung.com/consumer-storage/internal-ssd/980pro/ |
+| HDD | 6x 16TB WD Gold | WD161KRYZ  | https://www.westerndigital.com/products/internal-drives/wd-gold-sata-hdd#WD161KRYZ |
+### Operating System
+The host will run debian.
+### Storage
+6 - 16TB WD Gold drives in RAID-Z
+## Worker 1
+### Specs
+?
+### Operating System
+Currently Ubuntu Server
+### Storage
+512gb nvme ssd as boot drive
+### Storage
+#### Partitions
+The 2 2tb nvme ssds each have 3 partitions.
+| name | size | purpose |
+| --- | --- | --- |
+| ESP | 1Mb | esp partition holding zfsbootloader|
+| Root | 1500Gb | primary zfs partition |
+| Metadata | 350 Gb | Zfs metadata partition for the `tank` zpool | 
+#### Zpools
+The system has 2 primary pools
+| name | mode | purpose |
+| --- | --- | --- |
+| zroot | 2 drive mirror | fast mirrored storage |
+| tank | 6 drive raidz a mirrored special metadata vdev | bulk data storage |
+#### Datasets
+| path | purpose |
+| --- | --- |
+| zroot/ROOT/debian | host os 
+| zroot/vms/master | contains the cow2 file for the master node vm
+| zroot/vms/worker1 |
+| zroot/vms/worker2 |
+| zroot/vms/worker3 |
+| zroot/db/postgres | 
+| zroot/db/? |
+| zroot/minio/primary | minio storage
+| tank/media | My media directory (accessed by lots of stuff like emby, torrent clients, radarr, etc....)
+| tank/backups | 
+| zroot/minio/
+
+
+# Kubernetes
 
 
 # Bootstrapping
@@ -18,33 +86,9 @@ kubectl apply -f kube-prometheus/manifests/
 `kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.8.2/cert-manager.crds.yaml`
 ### Traefik
 `kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.8/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml`
-
-
-# Hosts
-## Master Node
-### Specs
-| part | item | model number | link|
-|---|---|---|---|
-| CPU | Ryzen Threadripper 1950X | YD195XA8AEWOF  | https://www.amd.com/en/products/cpu/amd-ryzen-threadripper-1950x |
-| CPU cooler | XE02-SP3 | SVST-FBA-XE02-SP3 | https://www.silverstonetek.com/en/product/info/coolers/XE02-SP3/ | 
-| RAM | 8x Kingston 16 GB 3200MHz DDR4 ECC CL22 DIMM| KSM32ES8/16HC | https://www.amazon.com/dp/B09N9TZZPJ?psc=1&ref=ppx_yo2ov_dt_b_product_details | 
-| Motherboard | ASRock X399 Taichi | 90-MXB5R0-A0UAYZ | https://www.asrock.com/mb/amd/x399%20taichi/index.asp#Specification | 
-| PSU | CORSAIR HX850, 850 Watt, 80+ Platinum| CP-9020138-NA | https://www.corsair.com/us/en/Categories/Products/Power-Supply-Units/hxi-series-2017-config/p/CP-9020138-NA |
-| SSD | 2x samsung 980 pro| MZ-V8P2T0B/AM | https://semiconductor.samsung.com/consumer-storage/internal-ssd/980pro/ |
-| HDD | 6x 16TB WD Gold | WD161KRYZ  | https://www.westerndigital.com/products/internal-drives/wd-gold-sata-hdd#WD161KRYZ |
-### Operating System
-The host will run nixos. 
-### Storage
-The drives will 
-6 - 16TB WD Gold drives in RAID-Z (80TB usable)
-## Worker 1
-### Specs
-asdf
-### Operating System
-Currently Ubuntu Server
-### Storage
-None
 # Microk8s Options
+ignore this
+
 dashboard, dns, helm3, prometheus, registry, storage, cilium, fluentd, gpu, helm, ingress, istio, jaeger, knative, kubeflow, linkerd, metallb, metrics-server, rbac
 
 # Persistence layer
@@ -53,14 +97,14 @@ handles data persistence.
 ### HDD
 Bulk data storage.
 ### SSD
-Fast storage for applications
+Fast storage for applications (db, os, etc)
 ## Storage APIs
 ### Minio
 provides s3 object storage, provides buckets using both hdd and ssd storage.
 ### PVCS
 Some pvcs will be 
 
-ssd storage is at `/mnt/sped/`, hdd storage is at `/mnt/tank`
+ssd storage is at `/zroot/sped/`, hdd storage is at `/mnt/tank`
 | name | path | kind | purpose |
 |---|----|----|----|
 | media | /mnt/tank/media | hostpath hdd | store media files |

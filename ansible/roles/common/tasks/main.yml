@@ -1,0 +1,71 @@
+---
+- name: common | set variables
+  ansible.builtin.include_vars: '{{ item }}'
+  tags:
+    - common
+    - network
+    - firewall
+    - ntp
+    - packages
+    - auto-updates
+    - users
+  with_first_found:
+    - "{{ ansible_facts['os_family'] }}.yml"
+    - default.yml
+
+- name: common | populate service facts
+  ansible.builtin.service_facts:
+  tags:
+    - common
+
+# Network
+- name: network
+  ansible.builtin.import_tasks: network.yml
+  tags:
+    - common
+    - network
+
+# Firewall
+- name: firewall
+  ansible.builtin.include_tasks:
+    file: firewall-{{ ansible_facts['os_family'] }}.yml
+    apply:
+      tags:
+        - common
+        - firewall
+
+# NTP
+- name: ntp
+  ansible.builtin.import_tasks: ntp.yml
+  tags:
+    - common
+    - ntp
+
+# Packages
+- name: packages
+  ansible.builtin.import_tasks: packages.yml
+  tags:
+    - common
+    - packages
+
+# Auto Updates
+- name: auto-updates
+  ansible.builtin.include_tasks:
+    file: auto-update-{{ ansible_facts['os_family'] }}.yml
+    apply:
+      tags:
+        - common
+        - auto-updates
+
+# Users
+- name: users
+  ansible.builtin.import_tasks: users.yml
+  tags:
+    - common
+    - users
+
+# Flush Handlers
+- name: common | flush handlers
+  ansible.builtin.meta: flush_handlers
+  tags:
+    - common

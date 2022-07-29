@@ -1,0 +1,9 @@
+---
+- name: kvm_hypervisors
+  hosts: kvm_hypervisors
+  gather_facts: true
+  become: true
+  roles:
+    - common
+    - hardware
+    - kvm_hypervisor

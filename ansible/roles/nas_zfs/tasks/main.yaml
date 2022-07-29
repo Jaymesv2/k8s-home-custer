@@ -1,0 +1,8 @@
+- name: create vms dataset
+  community.general.zfs:
+    name: zroot/vms
+    state: present
+    extra_zfs_properties:
+      setuid: off
+      automount: false
+      
