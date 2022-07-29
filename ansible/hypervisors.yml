@@ -5,5 +5,4 @@
   become: true
   roles:
     - common
-    - hardware
-    - kvm_hypervisor
+    #- kvm_hypervisor

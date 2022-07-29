@@ -1,0 +1,9 @@
+---
+- name: ntp | restart ntp
+  ansible.builtin.service:
+    name: '{{ ntp_service_name }}'
+    state: restarted
+  listen: restart ntp
+  tags:
+    - common
+    - ntp

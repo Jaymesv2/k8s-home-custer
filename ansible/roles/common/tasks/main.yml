@@ -20,46 +20,28 @@
 
 # Network
 - name: network
-  ansible.builtin.import_tasks: network.yml
+  import_tasks: network.yml
   tags:
     - common
     - network
 
-# Firewall
-- name: firewall
-  ansible.builtin.include_tasks:
-    file: firewall-{{ ansible_facts['os_family'] }}.yml
-    apply:
-      tags:
-        - common
-        - firewall
-
 # NTP
 - name: ntp
-  ansible.builtin.import_tasks: ntp.yml
+  import_tasks: ntp.yml
   tags:
     - common
     - ntp
 
 # Packages
 - name: packages
-  ansible.builtin.import_tasks: packages.yml
+  import_tasks: packages.yml
   tags:
     - common
     - packages
 
-# Auto Updates
-- name: auto-updates
-  ansible.builtin.include_tasks:
-    file: auto-update-{{ ansible_facts['os_family'] }}.yml
-    apply:
-      tags:
-        - common
-        - auto-updates
-
 # Users
 - name: users
-  ansible.builtin.import_tasks: users.yml
+  import_tasks: users.yml
   tags:
     - common
     - users

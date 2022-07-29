@@ -1,0 +1,34 @@
+---
+- name: network | install networking packages
+  ansible.builtin.package:
+    pkg: '{{ item }}'
+    state: present
+  loop: '{{ network_packages_list }}'
+  tags:
+    - kvm-hypervisor
+    - network
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: network | configure /etc/network/interfaces
+  ansible.builtin.copy:
+    src: files/etc/network/interfaces
+    dest: /etc/network/interfaces
+    owner: root
+    group: root
+    mode: '644'
+  tags:
+    - kvm-hypervisor
+    - network
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: network | configure /etc/interfaces.d/br0
+  ansible.builtin.copy:
+    src: files/etc/network/interfaces.d/br0
+    dest: /etc/network/interfaces.d/br0
+    owner: root
+    group: root
+    mode: '644'
+  tags:
+    - kvm-hypervisor
+    - network
+  when: ansible_facts['os_family'] == 'Debian'

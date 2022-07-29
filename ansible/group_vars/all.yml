@@ -1,0 +1,24 @@
+---
+domain: lab.jaymes.xyz
+
+email: admin@jaymes.xyz
+admin_users:
+    - admin
+ansible_user: admin
+
+nameservers:
+  - '1.1.1.1'
+  - '8.8.8.8'
+
+network_subnets:
+  - '10.0.0.0/24'
+  - '10.0.1.0/24'
+
+#firewall_servers_subnet: 10.1.1.0/24
+#firewall_wireless_subnet: 10.1.2.0/24
+#firewall_clients_subnet: 10.1.3.0/24
+
+timezone: America/Chicago
+debian_version: bullseye
+
+ansible_python_interpreter: /usr/bin/python3.7

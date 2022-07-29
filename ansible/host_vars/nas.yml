@@ -1,3 +1,4 @@
 # nas server
 
 ansible_host: 10.0.10.20 # (the second interface is 10.0.10.21 for now)
+ansible_user: admin
