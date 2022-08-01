@@ -1,0 +1,14 @@
+---
+- name: udmp setup
+  hosts: udmp
+  gather_facts: false
+  become: true
+  roles:
+    - install_wireguard_kmod
+    - udm_config
+    #- role: mabunixda.ansible_udmp
+      #certificate: <path-to-certificate.pem>
+      #certificate_key: <path-to-certificate-key.pem>
+      #frr_enabled: true
+      #cloudflare_enabled: true
+      #nodeexporter_enabled: true

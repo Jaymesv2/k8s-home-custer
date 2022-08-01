@@ -1,0 +1,18 @@
+! -*- bgp -*-
+
+hostname {{ frr.bgp.hostname }}
+password {{ frr.bgp.password }}
+
+frr defaults traditional
+log file stdout
+
+
+router bgp {{ frr.bgp.id }}
+ bgp router-id $IP_OF_UDMP
+ network $NETWORK_CIDR
+ {% for metallb_peer in hostvars[groups['k8s_workers']]
+ neighbor {{ metallb_peer.ansible_host }} remote-as {{ frr.bgp.id }}
+ {% endfor %}
+
+
+! -*- bgp -*-

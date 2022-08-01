@@ -1,0 +1,30 @@
+- name: template
+  template:
+    src: wg0.conf.j2
+    dest: /etc/wireguard/wg0.conf
+
+- name: ssh config
+  copy: 
+    src: authorized_keys
+    dest: /mnt/data/ssh/authorized_keys
+
+- name: copy
+  copy:
+    src: on_boot.d/10-onboot-{{item}}.sh
+    dest: /mnt/data/on_boot.d/10-onboot-{{item}}.sh
+  with_items:
+  - "frr"
+  - "nodeexporter"
+  register: copy_scripts
+
+- name: scripts
+  when: copy_scripts.changed
+  block:
+  - name: scrips | perms
+    raw: chmod +x /mnt/data/on_boot.d/*.sh
+  - name: run udm boot service
+    raw: "podman exec unifi-os systemctl restart udm-boot"
+
+#- name: frr config
+#  src: frr.config
+#  dest: /mnt/data/frr/

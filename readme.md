@@ -11,8 +11,27 @@ inspired by: https://github.com/eyulf/homelab
 Terraform provisions the vms themselves
 ## Flux
 Almost all applications are run on k8s so flux manages helm, kustomization etc...
+# Networks
+## Networks
+| Name | Location | Cidr | Purpose |
+| --- | --- | --- | --- |
+| Home | Parents House | 10.0.0.0/16 | My Parents House  (I'm not going to route userland, guest, etc..., only the lab) |
+| Primary | UTD | 10.1.0.0/16 | My private network at UTD (Desktop, Pis, Etc...)|
 
 
+## BGP ASNs
+| Name | Device | IP | ASN | Networks |
+| --- | ---- | ---- | --- | --- |
+| Home | udm pro | 
+| Dorm | My Desktop | 10.255.255.22 | 
+## Home
+| Name | Cidr | Purpose |
+| --- | --- | --- |
+| Managment | 10.0.0.0/24 | Network for my unifi devices |
+| Userland | 10.0.1.0/24 | User network |
+| Guest | 192.168.0.0/24 | Guest network | 
+| Service | 10.0.10.0/24 | Where the homelab lives |
+| 10.255.255.0/24 | BGP Peering | where the bgp routes communicate with eachother |
 # Hosts
 ## Udm Pro
 Ubiquiti Dream Machine Pro. 

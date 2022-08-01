@@ -1,0 +1,23 @@
+- name: check for startup service
+  stat: 
+    path: "{{unifi_onboot_directory}}/setup_wireguard.sh"
+  register: setup_script
+
+- name: main block
+  block:
+  - name: download and decompress
+    shell:
+      cmd: "curl -LJ https://github.com/tusc/wireguard-kmod/releases/download/v06-01-22/wireguard-kmod-06-01-22.tar.Z | tar -C {{ unifi_mount_path }} -xvzf -"
+  
+  - name: set setup script perms
+    shell:
+      cmd: "chmod +x {{ unifi_mount_path }}/wireguard/setup_wireguard.sh"
+
+  - name: run setup script
+    shell:
+      cmd: "{{ unifi_mount_path }}/wireguard/setup_wireguard.sh"
+
+  - name: copy to on boot
+    shell:
+      cmd: "cp {{unifi_mount_path}}/wireguard/setup_wireguard.sh {{unifi_onboot_directory}}/setup_wireguard.sh"
+  when: "not setup_script.stat.exists"

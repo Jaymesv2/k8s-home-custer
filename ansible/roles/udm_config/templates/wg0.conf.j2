@@ -1,0 +1,15 @@
+
+[Interface]
+Address = {{wireguard.address}}
+ListenPort = {{wireguard.listen_port}}
+PrivateKey = {{wireguard.private_key}}
+#PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o enp2s0 -j MASQUERADE
+#PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o enp2s0 -j MASQUERADE
+
+{% for peer in wireguard.peers %}
+# {{peer.name}}
+[Peer]
+PublicKey = {{peer.public_key}}
+PresharedKey = {{peer.preshared_key}}
+AllowedIPs = {{peer.allowed_ips}}
+{% endfor %}
